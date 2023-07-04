@@ -1,0 +1,161 @@
+$variable-prefix: tc-;
+
+// Color
+$--color-primary: #528cc7;
+$--color-success: #99c14c;
+$--color-warning: #e49d39;
+$--color-danger: #d64f65;
+$--color-info: #52c2c2;
+$--color-white: #ffffff;
+$--color-black: #000000;
+
+$--color-light: var(--#{$variable-prefix}color-light);
+$--color-dark: var(--#{$variable-prefix}color-dark);
+$--color-text-primary: var(--#{$variable-prefix}color-text-primary);
+$--color-text-regular: var(--#{$variable-prefix}color-text-regular);
+$--color-text-secondary: var(--#{$variable-prefix}color-text-secondary);
+$--color-text-placeholder: var(--#{$variable-prefix}color-text-placeholder);
+$--border-color-base: var(--#{$variable-prefix}border-color-base);
+$--border-color-light: var(--#{$variable-prefix}border-color-light);
+$--border-color-lighter: var(--#{$variable-prefix}border-color-lighter);
+$--border-color-extra-light: var(--#{$variable-prefix}border-color-extra-light);
+
+// Background
+$--background-color-base: var(--#{$variable-prefix}background-color-base);
+
+/* Typography
+-------------------------- */
+$--font-color-disabled-base: var(--#{$variable-prefix}font-color-disabled-base);
+
+/* Icon
+-------------------------- */
+$--icon-color: var(--#{$variable-prefix}icon-color);
+
+/* Checkbox
+-------------------------- */
+$--checkbox-disabled-input-fill: var(
+  --#{$variable-prefix}checkbox-disabled-input-fill
+);
+
+/* Select
+-------------------------- */
+$--select-multiple-input-color: var(
+  --#{$variable-prefix}select-multiple-input-color
+);
+$--select-dropdown-empty-color: var(
+  --#{$variable-prefix}select-dropdown-empty-color
+);
+
+/* Message
+-------------------------- */
+$--message-background-color: var(--#{$variable-prefix}message-background-color);
+
+/* Cascader
+-------------------------- */
+$--cascader-tag-background: var(--#{$variable-prefix}cascader-tag-background);
+
+/* Tab
+-------------------------- */
+$--tab-border-line: var(--#{$variable-prefix}tab-border-line);
+
+/* DatePicker
+--------------------------*/
+$--datepicker-inner-border-color: var(
+  --#{$variable-prefix}datepicker-inner-border-color
+);
+$--datepicker-cell-hover-color: var(
+  --#{$variable-prefix}datepicker-cell-hover-color
+);
+
+/* Calendar
+--------------------------*/
+$--calendar-selected-background-color: var(
+  --#{$variable-prefix}calendar-selected-background-color
+);
+
+/* Avatar
+--------------------------*/
+$--avatar-font-color: var(--#{$variable-prefix}avatar-font-color);
+$--avatar-background-color: var(--#{$variable-prefix}avatar-background-color);
+
+/* Descriptions
+-------------------------- */
+$--descriptions-item-bordered-label-background: var(
+  --#{$variable-prefix}descriptions-item-bordered-label-background
+);
+
+/* Skeleton 
+--------------------------*/
+$--skeleton-color: var(--#{$variable-prefix}skeleton-color);
+$--skeleton-to-color: var(--#{$variable-prefix}skeleton-to-color);
+
+/* Svg
+--------------- */
+$--svg-monochrome-grey: var(--#{$variable-prefix}svg-monochrome-grey);
+
+// for light mode
+:root {
+  --#{$variable-prefix}color-light: #fff;
+  --#{$variable-prefix}color-dark: #000;
+  --#{$variable-prefix}color-text-primary: #303133;
+  --#{$variable-prefix}color-text-regular: #606266;
+  --#{$variable-prefix}color-text-secondary: #909399;
+  --#{$variable-prefix}color-text-placeholder: #c0c4cc;
+  --#{$variable-prefix}border-color-base: #dcdfe6;
+  --#{$variable-prefix}border-color-light: #e4e7ed;
+  --#{$variable-prefix}border-color-lighter: #ebeef5;
+  --#{$variable-prefix}border-color-extra-light: #f2f6fc;
+  --#{$variable-prefix}background-color-base: #f5f7fa;
+  --#{$variable-prefix}font-color-disabled-base: #bbb;
+  --#{$variable-prefix}icon-color: #666;
+  --#{$variable-prefix}checkbox-disabled-input-fill: #edf2fc;
+  --#{$variable-prefix}select-multiple-input-color: #666;
+  --#{$variable-prefix}select-dropdown-empty-color: #999;
+  --#{$variable-prefix}message-background-color: #edf2fc;
+  --#{$variable-prefix}cascader-tag-background: #f0f2f5;
+  --#{$variable-prefix}tab-border-line: 1px solid #e4e4e4;
+  --#{$variable-prefix}datepicker-inner-border-color: #e4e4e4;
+  --#{$variable-prefix}datepicker-cell-hover-color: #fff;
+  --#{$variable-prefix}calendar-selected-background-color: #f2f8fe;
+  --#{$variable-prefix}avatar-font-color: #fff;
+  --#{$variable-prefix}avatar-background-color: #c0c4cc;
+  --#{$variable-prefix}descriptions-item-bordered-label-background: #fafafa;
+  --#{$variable-prefix}skeleton-color: #f2f2f2;
+  --#{$variable-prefix}skeleton-to-color: #e6e6e6;
+  --#{$variable-prefix}svg-monochrome-grey: #dcdde0;
+}
+
+// for dark mode
+[data-layout-mode='dark'] {
+  --#{$variable-prefix}color-light: #262a2f;
+  --#{$variable-prefix}color-dark: #cecece;
+  --#{$variable-prefix}color-text-primary: #cbcfd6;
+  --#{$variable-prefix}color-text-regular: #cbcfd6;
+  --#{$variable-prefix}color-text-secondary: #909399;
+  --#{$variable-prefix}color-text-placeholder: #c0c4cc;
+  --#{$variable-prefix}border-color-base: #343a3f;
+  --#{$variable-prefix}border-color-light: #353b41;
+  --#{$variable-prefix}border-color-lighter: #474e55;
+  --#{$variable-prefix}border-color-extra-light: #51585f;
+  --#{$variable-prefix}background-color-base: #373c42;
+  --#{$variable-prefix}font-color-disabled-base: #bbb;
+  --#{$variable-prefix}icon-color: #666;
+  --#{$variable-prefix}checkbox-disabled-input-fill: #303133;
+  --#{$variable-prefix}select-multiple-input-color: #666;
+  --#{$variable-prefix}select-dropdown-empty-color: #999;
+  --#{$variable-prefix}message-background-color: #edf2fc;
+  --#{$variable-prefix}cascader-tag-background: #f0f2f5;
+  --#{$variable-prefix}tab-border-line: 1px solid #474e55;
+  --#{$variable-prefix}datepicker-inner-border-color: #474e55;
+  --#{$variable-prefix}datepicker-cell-hover-color: #fff;
+  --#{$variable-prefix}calendar-selected-background-color: #383a3b;
+  --#{$variable-prefix}avatar-font-color: #fff;
+  --#{$variable-prefix}avatar-background-color: #343536;
+  --#{$variable-prefix}descriptions-item-bordered-label-background: #fafafa;
+  --#{$variable-prefix}skeleton-color: #f2f2f2;
+  --#{$variable-prefix}skeleton-to-color: #e6e6e6;
+  --#{$variable-prefix}svg-monochrome-grey: #dcdde0;
+}
+
+$--font-path: 'assets/scss/config/theme-chalk/lib/fonts';
+@import 'assets/scss/config/theme-chalk/src/index.scss';

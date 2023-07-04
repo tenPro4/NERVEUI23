@@ -1,0 +1,14 @@
+$--font-path: 'element-ui/lib/theme-chalk/fonts';
+
+$--color-primary: #528cc7;
+$--color-success: #99c14c;
+$--color-warning: #e49d39;
+$--color-danger: #d64f65;
+$--color-info: #52c2c2;
+
+$--color-white: #262a2f;
+$--background-color-base: #212529;
+$--border-color-base: #262a2f;
+$--border-color-light: #262a2f;
+
+@import 'element-ui/packages/theme-chalk/src/index';
