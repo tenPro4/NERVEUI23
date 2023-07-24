@@ -1,37 +1,15 @@
 <script>
-import { required } from 'vuelidate/lib/validators'
+import {CREATE_TENANT_MUTATION} from '../schemas/mutations'
+import {getDummyData} from '../schemas/queries'
 
 export default {
   auth: false,
   layout: 'none',
   data() {
     return {
-    //   username: 'admin',
-    //   password: 'admin',
-      submitted: false,
-      authError: null,
-      tryingToLogIn: false,
-      isAuthError: false,
-      fullname:null,
-      email:null,
-      username:null,
-      password:null,
-    }
-  },
-  validations() {
-    return {
-      fullname: {
-        required,
-      },
-      email: {
-        required,
-      },
-      username: {
-        required,
-      },
-      password: {
-        required,
-      },
+      loading:true,
+      newFlow:null,
+      kratosFlowRequest:null,
     }
   },
   computed: {
@@ -39,35 +17,53 @@ export default {
       return this.$store ? this.$store.state.notification : null
     },
   },
+  async mounted(){
+    this.loading = true
+
+    this.newFlow = await this.$ory.createBrowserRegistrationFlow();
+    this.kratosFlowRequest = this.newFlow.data.ui.nodes.reduce((obj, node) => {
+      if (node.attributes.value !== undefined) {
+        obj[node.attributes.name] = node.attributes.value;
+      }
+      else{
+        obj[node.attributes.name] = "";
+      }
+      
+      return obj;
+    }, {});
+
+    this.loading = false
+  },
   methods: {
     async tryToRegister() {
-      this.submitted = true
-      // // stop here if form is invalid
-
-      this.$v.$touch()
-
-      // // eslint-disable-next-line no-empty
-      this.tryingToLogIn = false
-      try {
-        const result = await this.$axios.$post('/User', {
-          Contact:"aa",
-          Position:"aa",
-          ReportingTo:"aa",
-          fullName: this.fullname,
-          username: this.username,
-          password: this.password,
-          email:this.email,
+      const res = await this.$apollo.query({
+          query: getDummyData,
         })
-        if (!result.error) {
-          this.$noty.success('New User has been created!')
-          // this.fullname = null
-          // this.username = null
-          // this.password = null
-          // this.email = null
-          await this.$fetch()
-        }
-      } catch {}
-      await this.$router.push('/login')
+
+      console.log('cdata114',res.data)
+      console.log('body r',this.kratosFlowRequest)
+      try{
+        await this.$ory.updateRegistrationFlow({flow:this.newFlow.data.id,updateRegistrationFlowBody:this.kratosFlowRequest})
+        const input = {
+        name: this.kratosFlowRequest['traits.tenant'],
+        icon: '',
+        description: 'd1',
+        pool: 1
+      };
+      await this.$apollo.mutate({
+          mutation: CREATE_TENANT_MUTATION,
+          variables: {
+            input
+          },
+        });
+      // console.log(response.data.createNewTenant.tenant.name);
+      this.$router.push('/login')
+      }
+      catch(err)
+      {
+        console.log('err58',err)
+        this.$notify.error('Something wrong.')
+      }
     },
   },
 }
@@ -98,13 +94,13 @@ export default {
                   />
                 </router-link>
               </div>
-              <p class="mt-3 fs-24 fw-medium">Sophic InternX</p>
+              <p class="mt-3 fs-24 fw-medium">Nerve System</p>
             </div>
           </div>
         </div>
         <!-- end row -->
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="!loading">
           <div class="col-md-8 col-lg-6 col-xl-5">
             <div class="card mt-4">
               <div class="card-body p-4">
@@ -113,123 +109,54 @@ export default {
                 </div>
                 <div class="p-2 mt-4">
                   <div
-                    v-if="isAuthError"
-                    variant="danger"
-                    class="mt-3"
-                    dismissible
-                  >
-                    {{ authError }}
-                  </div>
-
-                  <div
                     v-if="notification.message"
                     :class="'alert ' + notification.type"
                   >
                     {{ notification.message }}
                   </div>
 
-                  <form @submit.prevent="tryToRegister">
-                    <div class="mb-3">
-                      <label for="fullname" class="form-label">Full Name</label>
-                      <input
-                        id="fullname"
-                        v-model="fullname"
-                        class="form-control"
-                        placeholder="Enter full name"
-                        :class="{
-                          'is-invalid': submitted && $v.fullname.$invalid,
-                        }"
-                      />
-                      <div
-                        v-if="submitted && $v.fullname.$invalid"
-                        class="invalid-feedback"
-                      >
-                        <span>Full name is required</span>
-                      </div>
-                    </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      v-model="kratosFlowRequest['traits.email']"
+                      class="form-control"
+                      placeholder="Enter email"/>
+                  </div>
 
-                    <div class="mb-3">
-                      <label for="email" class="form-label">Email</label>
-                      <input
-                        id="email"
-                        v-model="email"
-                        class="form-control"
-                        placeholder="Enter email"
-                        :class="{
-                          'is-invalid': submitted && $v.email.$invalid,
-                        }"
-                      />
-                      <div
-                        v-if="submitted && $v.email.$invalid"
-                        class="invalid-feedback"
-                      >
-                        <span>Email is required</span>
-                      </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="password-input">Password</label>
+                    <div class="position-relative auth-pass-inputgroup mb-3">
+                      <input class="form-control" type="password" v-model="kratosFlowRequest.password"/>
                     </div>
-                    
-                    <div class="mb-3">
-                      <label for="username" class="form-label">Username</label>
-                      <input
-                        id="username"
-                        v-model="username"
-                        class="form-control"
-                        placeholder="Enter username"
-                        :class="{
-                          'is-invalid': submitted && $v.username.$invalid,
-                        }"
-                      />
-                      <div
-                        v-if="submitted && $v.username.$invalid"
-                        class="invalid-feedback"
-                      >
-                        <span>Username is required</span>
-                      </div>
-                    </div>
+                  </div>
 
-                    <div class="mb-3">
-                      <label class="form-label" for="password-input"
-                        >Password</label
-                      >
-                      <div class="position-relative auth-pass-inputgroup mb-3">
-                        <input
-                          id="password-input"
-                          v-model="password"
-                          type="password"
-                          class="form-control pe-5"
-                          :class="{
-                            'is-invalid': submitted && $v.password.$error,
-                          }"
-                          placeholder="Enter password"
-                        />
-                        <div
-                          v-if="submitted && $v.password.$invalid"
-                          class="invalid-feedback"
-                        >
-                          <span>Password is required</span>
-                        </div>
-                      </div>
-                    </div>
+                  <div class="mb-3">
+                    <label for="tenant" class="form-label">User Name</label>
+                    <input
+                      v-model="kratosFlowRequest['traits.tenant']"
+                      class="form-control"
+                      placeholder="Enter username"
+                    />
+                  </div>
 
-                    <div class="mt-4">
-                      <button
-                        class="btn btn-primary w-100"
-                        type="submit"
-                        :disabled="tryingToLogIn"
-                      >
-                        <span
-                          v-if="tryingToLogIn"
-                          class="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Register
-                      </button>
-                      <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
-                      <div style="padding-top:20px;text-align:center">
-                      <NuxtLink to="/login" class="text-muted">--> Back to login </NuxtLink>
-                      </div>
+                  <div class="mb-3">
+                    <label for="tenant" class="form-label">Role</label>
+                    <input
+                      v-model="kratosFlowRequest['traits.role']"
+                      class="form-control"
+                      placeholder="Enter role"
+                    />
+                  </div>
+
+                  <div class="mt-4">
+                    <button
+                      class="btn btn-primary w-100"
+                      type="button" @click="tryToRegister()">Register</button>
+                    <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+                    <div style="padding-top:20px;text-align:center">
+                    <NuxtLink to="/login" class="text-muted"> Back to login </NuxtLink>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </div>
               <!-- end card body -->

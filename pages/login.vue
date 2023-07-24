@@ -1,27 +1,12 @@
 <script>
-import { required } from 'vuelidate/lib/validators'
-
 export default {
   auth: false,
   layout: 'none',
   data() {
     return {
-      username: '',
-      password: '',
-      submitted: false,
-      authError: null,
-      tryingToLogIn: false,
-      isAuthError: false,
-    }
-  },
-  validations() {
-    return {
-      username: {
-        required,
-      },
-      password: {
-        required,
-      },
+      loading:true,
+      newFlow:null,
+      kratosFlowRequest:null,
     }
   },
   computed: {
@@ -32,39 +17,34 @@ export default {
       return this.$config.API_BASE_URL
     }
   },
+  async mounted(){
+    this.loading = true
+
+    this.newFlow = await this.$ory.createBrowserLoginFlow();
+    this.kratosFlowRequest = this.newFlow.data.ui.nodes.reduce((obj, node) => {
+      if (node.attributes.value !== undefined) {
+        obj[node.attributes.name] = node.attributes.value;
+      }
+      else{
+        obj[node.attributes.name] = "";
+      }
+      
+      return obj;
+    }, {});
+
+    this.loading = false
+  },
   methods: {
-    // Try to log the user in with the username
-    // and password they provided.
-    async tryToLogIn() {
-      this.submitted = true
-      // stop here if form is invalid
-
-      this.$v.$touch()
-
-      // eslint-disable-next-line no-empty
-      if (this.$v.$invalid) {
-      } else {
-        const { username, password } = this
-        // if (username && password) {
-        //   this.tryingToLogIn = true
-        //   try {
-        //     await this.$auth.loginWith('local', {
-        //       data: {
-        //         username: this.username,
-        //         password: this.password,
-        //       },
-        //     })
-        //     .then(() => {
-        //       this.$router.push('/')
-        //     })
-        //     .catch(() => this.$noty.error('Username or password was invalid!'))
-            
-        //   } catch {}
-        //   this.tryingToLogIn = false
-        // }
+    async tryLogin(){
+      try
+      {
+        await this.$ory.updateLoginFlow({flow:this.newFlow.data.id,updateLoginFlowBody:this.kratosFlowRequest})
         this.$router.push('/')
       }
-    },
+      catch{
+        this.$notify.error('Invalid email or password,please try again.')
+      }
+    }
   },
 }
 </script>
@@ -92,109 +72,44 @@ export default {
         </div>
         <!-- end row -->
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="!loading">
           <div class="col-md-8 col-lg-6 col-xl-5">
             <div class="card mt-4">
               <div class="card-body p-4">
                 <div class="text-center mt-2">
                   <h5 class="text-primary">Welcome Back !</h5>
-                  <p class="">Sign in to continue to eCRE Tracking</p>
+                  <p class="">Sign in to continue to Nerve System</p>
                 </div>
                 <div class="p-2 mt-4">
-                  <div
-                    v-if="isAuthError"
-                    variant="danger"
-                    class="mt-3"
-                    dismissible
-                  >
-                    {{ authError }}
-                  </div>
-
                   <div
                     v-if="notification.message"
                     :class="'alert ' + notification.type"
                   >
                     {{ notification.message }}
                   </div>
-
-                  <form @submit.prevent="tryToLogIn">
-                    <div class="mb-3">
-                      <label for="username" class="form-label">Username</label>
+                  <div class="mb-3">
+                      <label for="email" class="form-label">Email</label>
                       <input
-                        id="username"
-                        v-model="username"
+                        v-model="kratosFlowRequest.identifier"
                         class="form-control"
-                        placeholder="Enter username"
-                        :class="{
-                          'is-invalid': submitted && $v.username.$invalid,
-                        }"
-                      />
-                      <div
-                        v-if="submitted && $v.username.$invalid"
-                        class="invalid-feedback"
-                      >
-                        <span>Username is required</span>
-                      </div>
+                        placeholder="Enter email"/>
                     </div>
-
                     <div class="mb-3">
-                      <!-- <div class="float-end">
-                        <router-link to="/forgotpassword" class="text-muted"
-                          >Forgot password?</router-link
-                        >
-                      </div>  -->
-                      <label class="form-label" for="password-input"
-                        >Password</label
-                      >
+                      <label class="form-label" for="password-input">Password</label>
                       <div class="position-relative auth-pass-inputgroup mb-3">
-                        <input
-                          id="password-input"
-                          v-model="password"
-                          type="password"
-                          class="form-control pe-5"
-                          :class="{
-                            'is-invalid': submitted && $v.password.$error,
-                          }"
-                          placeholder="Enter password"
-                        />
-                        <div
-                          v-if="submitted && $v.password.$invalid"
-                          class="invalid-feedback"
-                        >
-                          <span>Password is required</span>
-                        </div>
+                        <input class="form-control" name="password" type="password" v-model="kratosFlowRequest.password"/>
                       </div>
                     </div>
-                    <div class="mt-4">
-                      <button
-                        class="btn btn-primary w-100"
-                        type="submit"
-                        :disabled="tryingToLogIn"
-                      >
-                        <span
-                          v-if="tryingToLogIn"
-                          class="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Sign In
-                      </button>
-                    </div>
-                  </form>
+                    <!-- <input name="identifier" type="email" value="po@gm.com"/> -->
+                    <button class="btn btn-primary w-100" type="button" @click="tryLogin()">Submit</button>
                 </div>
               </div>
-              <!-- end card body -->
             </div>
-            <!-- end card -->
           </div>
         </div>
-        <!-- end row -->
       </div>
-      <!-- end container -->
     </div>
-    <!-- end auth page content -->
 
-    <!-- footer -->
     <footer class="footer">
       <div class="container">
         <div class="row">

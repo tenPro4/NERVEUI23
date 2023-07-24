@@ -1,3 +1,5 @@
+import {typeDefs} from "./schemas/typeDef"
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -55,6 +57,7 @@ export default {
     { src: '~/plugins/lodash' },
     { src: '~/plugins/aos' },
     { src: '~/plugins/element-ui' },
+    {src:"~/plugins/ory_client",mode:"client"}
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -72,11 +75,29 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/dayjs',
     '@nuxtjs/auth-next',
+    '@nuxtjs/apollo',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseURL:process.env.API_URL
+  },
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: process.env.GRAPHQL_URL,
+        typeDefs,
+        httpLinkOptions: {
+          credentials: 'include',
+        },
+      },
+    },
+    defaultOptions: {
+      query: {
+        fetchPolicy: 'no-cache',
+      },
+    },
   },
 
   dayjs: {
@@ -93,33 +114,10 @@ export default {
   router: {
     // base: '/intelTowerLight_UI',
     // base: '/',
+    middleware: ['ory_auth'],
     base: process.env.ROUTE_URL,
     linkActiveClass: 'active',
   },
-
-  // auth: {
-  //   redirect: {
-  //     login: '/login',
-  //     logout: '/login',
-  //     callback: '/login',
-  //     home: false,
-  //   },
-  //   strategies: {
-  //     local: {
-  //       token: {
-  //         property: 'token',
-  //       },
-  //       user: {
-  //         property: false,
-  //       },
-  //       endpoints: {
-  //         login: { url: '/auth/login', method: 'post' },
-  //         user: { url: '/auth/me', method: 'get' },
-  //         logout: false,
-  //       },
-  //     },
-  //   },
-  // },
 
   pageTransition: {
     name: 'page',
@@ -132,7 +130,8 @@ export default {
   },
 
   server: {
-    host: '0.0.0.0',
+    host: 'localhost',
+    port: 3000
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

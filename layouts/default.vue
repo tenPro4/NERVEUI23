@@ -4,7 +4,6 @@ import Horizontal from './horizontal'
 import TwoColumns from './twocolumn'
 import PageHeader from '~/components/layout/page-header'
 import { layoutComputed } from '~/store/helpers'
-import "formiojs/dist/formio.full.min.css";
 import 'vue-select/dist/vue-select.css';
 import 'bootstrap'
 
