@@ -160,10 +160,7 @@ export default {
         }
       })
     }
-
-    console.log('cttt178', treeArray)
     this.data = new Tree(treeArray)
-    console.log('cdata114', this.data)
   },
   mounted() {
     this.setTitle(this.$metaInfo.title)
